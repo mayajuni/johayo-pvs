@@ -1,0 +1,28 @@
+{
+  "name": "johayo-param-validator",
+  "version": "0.0.1",
+  "description": "parameters validator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "parameters",
+    "param",
+    "validator",
+    "validation"
+  ],
+  "author": {
+    "name": "Dongjun Kwon",
+    "email": "mayajuni10@gmail.com"
+  },
+  "license":  [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/MIT"
+    }
+  ],
+  "engines": {
+    "node": ">= 0.10.0"
+  }
+}
