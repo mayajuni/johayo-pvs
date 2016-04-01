@@ -12,6 +12,10 @@
     "validator",
     "validation"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mayajuni/johayo-pvs"
+  },
   "author": {
     "name": "Dongjun Kwon",
     "email": "mayajuni10@gmail.com"
