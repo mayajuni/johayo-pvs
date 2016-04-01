@@ -1,5 +1,5 @@
 {
-  "name": "johayo-param-validator",
+  "name": "johayo-pvs",
   "version": "0.0.1",
   "description": "parameters validator",
   "main": "index.js",
