@@ -27,7 +27,7 @@ function Jpvs(params) {
     this.dd = 11
 }
 
-Jpvs.prototype.set = function(req, next) {
+Jpvs.prototype.set = function(req, res, next) {
     var _this = this;
 
     const method = req.method.toUpperCase();
@@ -60,7 +60,7 @@ Jpvs.prototype.set = function(req, next) {
                     }
 
                     if(!notCheck && (!params[key] && !req.params[key])){
-                        return next(new johayoError('bad_key', key));
+                        return next(new johayoError('bad_param', key));
                     }
                 }
             }
