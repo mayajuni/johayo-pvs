@@ -71,7 +71,7 @@ class Jpvs {
             if(params[key] || req.params[key]){
                 let val = !params[key] ? req.params[key] : params[key];
                 let type = typeof beforeParams[key] === 'object' ? beforeParams[key].type : beforeParams[key];
-                if(type) {
+                if(type && type === String && type === Number && type == Boolean) {
                     if(type === Boolean) {
                         val = val === 'true' ? true : false;
                     }else{

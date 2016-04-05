@@ -4,7 +4,7 @@
 ##변경사항
 1. checkURL 관련 오류 수정 
 2. 예제 수정
-
+3. 타입 관련 수정
 ##설치
 ```javascript
 $ npm install johayo-pvs
@@ -13,7 +13,7 @@ $ npm install johayo-pvs
 ##설정
 ```
 1. type: 변수의 type
-	- 현재 Number, String, Boolean 만 가능하며, 해당 type으로 변환해준다.
+	- 현재 Number, String, Boolean 만 가능하며, 해당 type으로 변환해준다. 남어지 타입들은 그냥 값을 넣어준다.(Object, Array ...)
 2. validate: 이것이 선언되어 있으면 바로 체크를 진행한다. 아직 단순 값 체크다.
 	{
     	method: 유효성 검사시 해당 메소드만 검사(,로 구분) 없는경우 전체 검색
