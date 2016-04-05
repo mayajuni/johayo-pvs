@@ -22,73 +22,76 @@ var johayoError = require("./error/johayoError");
  * @param params
  * @constructor
  */
-function Jpvs(params) {
-    this.get = params;
-    this.dd = 11
-}
 
-Jpvs.prototype.set = function(req, res, next) {
-    var _this = this;
-
-    const method = req.method.toUpperCase();
-    const params = method == "POST" || method == 'PUT' ? req.body : req.query;
-    const beforeParams = _this.get;
-    const originalUrl = req.originalUrl;
-
-    for(let key in beforeParams) {
-        let notCheck = false;
-        const param = beforeParams[key];
-
-        if(param.validate){
-            if(!param.validate.method || param.validate.method.toUpperCase().indexOf(method) > -1) {
-                if(param.validate.checkURL){
-                    for(let url of param.validate.checkURL) {
-                        const checkURL = url.replace('!', '');
-                        const isNotCheckURL = url.substr(0,1) == '!';
-
-                        if(isNotCheckURL) {
-                            if(originalUrl === checkURL || originalUrl === checkURL + '/') {
-                                notCheck = true;
-                                break;
-                            }
-                        }else if(!isNotCheckURL){
-                            if(!(originalUrl === checkURL || originalUrl === checkURL + '/')) {
-                                notCheck = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if(!notCheck && (!params[key] && !req.params[key])){
-                        return next(new johayoError('bad_param', key));
-                    }
-                }
-            }
-        }
-
-        if(params[key] || req.params[key]){
-            let val = !params[key] ? req.params[key] : params[key];
-            let type = typeof _this.get[key] === 'object' ? _this.get[key].type : _this.get[key];
-            if(type) {
-                if(type === Boolean) {
-                    val = val === 'true' ? true : false;
-                }else{
-                    val = type(val);
-                    if(!val) {
-                        return next(new johayoError('bad_type', 'type'));
-                    }
-                }
-            }
-
-            _this.get[key] = val;
-        }else if(param.default && method !== 'GET'){
-            _this.get[key] = param.default;
-        }else{
-            delete _this.get[key];
-        }
+class Jpvs {
+    constructor(params) {
+        this.params = params;
+        this.get = {};
     }
 
-    next();
-};
+    set(req, res, next) {
+        this.get = {};
+        const method = req.method.toUpperCase();
+        const params = method == "POST" || method == 'PUT' ? req.body : req.query;
+        const beforeParams = this.params;
+        const originalUrl = req.originalUrl;
+
+        for(let key in beforeParams) {
+            let notCheck = false;
+            const param = beforeParams[key];
+
+            if(param.validate){
+                if(!param.validate.method || param.validate.method.toUpperCase().indexOf(method) > -1) {
+                    if(param.validate.checkURL){
+                        for(let url of param.validate.checkURL) {
+                            const checkURL = url.replace('!', '');
+                            const isNotCheckURL = url.substr(0,1) == '!';
+
+                            if(isNotCheckURL) {
+                                if(originalUrl === checkURL || originalUrl === checkURL + '/') {
+                                    notCheck = true;
+                                    break;
+                                }
+                            }else if(!isNotCheckURL){
+                                notCheck = true;
+                                if(originalUrl === checkURL || originalUrl === checkURL + '/') {
+                                    notCheck = false;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if(!notCheck && (!params[key] && !req.params[key])){
+                            return next(new johayoError('bad_param', key));
+                        }
+                    }
+                }
+            }
+
+            if(params[key] || req.params[key]){
+                let val = !params[key] ? req.params[key] : params[key];
+                let type = typeof beforeParams[key] === 'object' ? beforeParams[key].type : beforeParams[key];
+                if(type) {
+                    if(type === Boolean) {
+                        val = val === 'true' ? true : false;
+                    }else{
+                        val = type(val);
+                        if(!val) {
+                            return next(new johayoError('bad_type', 'type'));
+                        }
+                    }
+                }
+
+                this.get[key] = val;
+            }else if(param.default && method !== 'GET'){
+                this.get[key] = param.default;
+            }else{
+                delete this.get[key];
+            }
+        }
+
+        next();
+    };
+}
 
 module.exports = Jpvs;

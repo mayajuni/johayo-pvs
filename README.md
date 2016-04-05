@@ -1,7 +1,9 @@
 #Johayo pvs (parameter validation set)
  express를 쓰면서 넘어오는 parameter들을 변수에 넣어주는 역활을 해준다. 어떻게 보면 java의 VO와 같은 역활이라고 생각하면 편할듯 하다. 간단하게 validation과 변수의 type정도를 체크해 준다.
- 아직 오류가 있어서 받지 마세요!!
-
+ 
+##변경사항
+1. checkURL 관련 오류 수정 
+2. 예제 수정
 
 ##설치
 ```javascript
@@ -33,19 +35,22 @@ status|code|message|비고
 ## 예제
 #####1. router 파일 안에서 통합으로 쓸 경우
 ```javascript
-var johayoPvs = require("johayo-pvs");
-var router = express.Router();
+'use strict';
+let johayoPvs = require("johayo-pvs");
+let router = express.Router();
 
-var loginVo = new johayoPvs({
+let loginVo = new johayoPvs({
 	userId: {type: String, validate: {method: "POST, DELETE, PUT"}},
     password: {type: String, validate: {method: "POST", checkURL: ["/login", "/join"]}},
     isDelete: {type: Boolean, Bdefault: false}
     gender: String
 });
 
-router.post("/login", vo.set, function(req, res) {
-	console.log(vo.get);
-})
+router.post("/login", function(req, res, next) {
+        loginVo.set(req, res, next);
+    }, function(req, res) {
+	    console.log(loginVo.get);
+    })
 
 module.exports = router;
 ```
@@ -53,7 +58,8 @@ module.exports = router;
 #####2. router 파일과 vo 파일을 분리해서 사용할 경우
 ```javascript
 loginVO.js
-var johayoPvs = require("johayo-pvs");
+'use strict';
+let johayoPvs = require("johayo-pvs");
 module.exports = new johayoPvs({
 	userId: {type: String, validate: {method: "POST, DELETE, PUT"}},
     password: {type: String, validate: {method: "POST", checkURL: ["/login", "/join"]}},
@@ -64,12 +70,17 @@ module.exports = new johayoPvs({
 
 ```javascript
 loginRouter.js
-var loginVO = require("loginVO"); //or var loginVO = require("loginVO.js")
-var router = express.Router();
+'use strict';
+let loginVO = require("loginVO"); //or var loginVO = require("loginVO.js")
+let router = express.Router();
 
-router.post("/login", vo.set, function(req, res) {
-	console.log(vo.get);
-})
+let pvs = (req, res, next) => {
+    loginVO.set(req, res, next)
+};
+
+router.post("/login", pvs, function(req, res) {
+	console.log(loginVO.get);
+});
 
 module.exports = router;
 ```
