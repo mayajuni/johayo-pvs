@@ -1,5 +1,6 @@
 #Johayo pvs (parameter validation set)
  express를 쓰면서 넘어오는 parameter들을 변수에 넣어주는 역활을 해준다. 어떻게 보면 java의 VO와 같은 역활이라고 생각하면 편할듯 하다. 간단하게 validation과 변수의 type정도를 체크해 준다.
+ 아직 오류가 있어서 받지 마세요!!
 
 
 ##설치
