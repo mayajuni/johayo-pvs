@@ -2,9 +2,8 @@
  express를 쓰면서 넘어오는 parameter들을 변수에 넣어주는 역활을 해준다. 어떻게 보면 java의 VO와 같은 역활이라고 생각하면 편할듯 하다. 간단하게 validation과 변수의 type정도를 체크해 준다.
  
 ##변경사항
-1. checkURL 관련 오류 수정 
-2. 예제 수정
-3. 타입 관련 수정
+1. 에러코드 409 => 400 으로 변경처리
+2. 기존에 사용하시는 분들은 409에서 400으로 변경하셔서 사용해야됩니다.
 ##설치
 ```javascript
 $ npm install johayo-pvs
@@ -28,8 +27,8 @@ $ npm install johayo-pvs
 ##오류
 status|code|message|비고
 -|-|-|-
-409|bad_param|해당 변수명|검색하는 변수명에 대한 값이 없는경우.
-409|bad_type|'type'|타입이 잘못된 경우.(예. "123ab" 값을 Number로 변환할때)
+400|bad_param|해당 변수명|검색하는 변수명에 대한 값이 없는경우.
+400|bad_type|'type'|타입이 잘못된 경우.(예. "123ab" 값을 Number로 변환할때)
 
 
 ## 예제

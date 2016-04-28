@@ -4,7 +4,7 @@ function johayoError (code, message) {
     this.name = "JpvsError";
     this.message = message;
     this.code = code;
-    this.status = 409;
+    this.status = 400;
 }
 
 johayoError.prototype = Object.create(Error.prototype);
