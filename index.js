@@ -60,10 +60,10 @@ class Jpvs {
                                 }
                             }
                         }
+                    }
 
-                        if(!notCheck && (!params[key] && !req.params[key])){
-                            return next(new johayoError('bad_param', key));
-                        }
+                    if(!notCheck && (!params[key] && !req.params[key])){
+                        return next(new johayoError('bad_param', key));
                     }
                 }
             }
