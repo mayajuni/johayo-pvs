@@ -1,6 +1,6 @@
 {
   "name": "johayo-pvs",
-  "version": "0.0.7",
+  "version": "0.1",
   "description": "parameters-validator-set",
   "main": "index.js",
   "scripts": {
@@ -27,6 +27,6 @@
     }
   ],
   "engines": {
-    "node": ">= 0.10.0"
+    "node": ">= 4.0"
   }
 }

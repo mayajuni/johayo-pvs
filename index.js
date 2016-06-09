@@ -39,7 +39,7 @@ class Jpvs {
         for(let key in beforeParams) {
             let notCheck = false;
             const param = beforeParams[key];
-
+            let realParam = params[key] || req.params[key];
             if(param.validate){
                 if(!param.validate.method || param.validate.method.toUpperCase().indexOf(method) > -1) {
                     if(param.validate.checkURL){
@@ -62,27 +62,41 @@ class Jpvs {
                         }
                     }
 
-                    if(!notCheck && (!params[key] && !req.params[key])){
+                    if(!notCheck && !realParam){
                         return next(new johayoError('bad_param', key));
+                    }
+                    /* Array 체크 */
+                    if(!notCheck && param.type === Array) {
+                        if(!Array.isArray(realParam)) {
+                            return next(new johayoError('bad_type', 'type'));
+                        }
+                        if(param.validate.json) {
+                            for(let val of realParam) {
+                                for(let smalKey in param.validate.json) {
+                                    if(!val[smalKey]) {
+                                        return next(new johayoError('bad_param', `${key}-${smalKey}`));
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
 
-            if(params[key] || req.params[key]){
-                let val = !params[key] ? req.params[key] : params[key];
+            if(realParam){
                 let type = typeof beforeParams[key] === 'object' ? beforeParams[key].type : beforeParams[key];
                 if(type && type === String && type === Number && type == Boolean) {
                     if(type === Boolean) {
-                        val = val === 'true' ? true : false;
+                        realParam = realParam === 'true' ? true : false;
                     }else{
-                        val = type(val);
-                        if(!val) {
+                        realParam = type(realParam);
+                        if(!realParam) {
                             return next(new johayoError('bad_type', 'type'));
                         }
                     }
                 }
 
-                this.get[key] = val;
+                this.get[key] = realParam;
             }else if(param.default && method !== 'GET'){
                 this.get[key] = param.default;
             }else{

@@ -2,7 +2,8 @@
  express를 쓰면서 넘어오는 parameter들을 변수에 넣어주는 역활을 해준다. 어떻게 보면 java의 VO와 같은 역활이라고 생각하면 편할듯 하다. 간단하게 validation과 변수의 type정도를 체크해 준다.
  
 ##변경사항
-1. 오류 발견하여 수정 처리 했습니다.
+1. Array 관련 추가. 아래의 예제 확인
+
 ##설치
 ```javascript
 $ npm install johayo-pvs
@@ -19,14 +20,16 @@ $ npm install johayo-pvs
             - 배열로 넣어야됨
             - 체크하지 않을 url은 앞에 ! 붙인다.
             - restful api일 경우 체크가 되지 않는다.[ex) /userId/:userId]
-    }
+         json : type이 Array이면서 그안이 json 타입일경우 각각의 행마다 필수값을 체크한다. type이 Array가 아니면 아무 작동 안한다.
+     }
 3. default: 디폴트 값 (request method가 Get이 아닐때만 된다)
 ```
 
 ##오류
 status|code|message|비고
 -|-|-|-
-400|bad_param|해당 변수명|검색하는 변수명에 대한 값이 없는경우.
+400|bad_param|해당 변수명(ex. key)|검색하는 변수명에 대한 값이 없는경우.
+400|bad_array_param|해당 변수명-오류변수명(ex. key-childKey)|array안의 json값에 대한 값이 없는경우.
 400|bad_type|'type'|타입이 잘못된 경우.(예. "123ab" 값을 Number로 변환할때)
 
 
@@ -40,11 +43,12 @@ let router = express.Router();
 let loginVo = new johayoPvs({
 	userId: {type: String, validate: {method: "POST, DELETE, PUT"}},
     password: {type: String, validate: {method: "POST", checkURL: ["/login", "/join"]}},
-    isDelete: {type: Boolean, Bdefault: false}
+    isDelete: {type: Boolean, default: false}
     gender: String
 });
+loginVO.setParams = (req,res,next) => VO.set(req,res,next);
 
-router.post("/login", function(req, res, next) {
+router.post("/login", loginVO.setParams, (req, res, next) => {
         loginVo.set(req, res, next);
     }, function(req, res) {
 	    console.log(loginVo.get);
@@ -58,12 +62,13 @@ module.exports = router;
 loginVO.js
 'use strict';
 let johayoPvs = require("johayo-pvs");
-module.exports = new johayoPvs({
+const VO = module.exports = new johayoPvs({
 	userId: {type: String, validate: {method: "POST, DELETE, PUT"}},
     password: {type: String, validate: {method: "POST", checkURL: ["/login", "/join"]}},
-    isDelete: {type: Boolean, Bdefault: false}
+    isDelete: {type: Boolean, default: false}
     gender: String
 });
+VO.setParams = (req,res,next) => VO.set(req,res,next);
 ```
 
 ```javascript
@@ -76,10 +81,40 @@ let pvs = (req, res, next) => {
     loginVO.set(req, res, next)
 };
 
-router.post("/login", pvs, function(req, res) {
+router.post("/login", loginVO.setParams, (req, res) => {
 	console.log(loginVO.get);
 });
 
 module.exports = router;
 ```
 
+#####3. Array관련 체크
+```javascript
+joinRouter.js
+'use strict';
+let johayoPvs = require("johayo-pvs");
+let router = express.Router();
+
+let Vo = new johayoPvs({
+	userId: {type: String, validate: {method: "POST"}},
+    password: {type: String, validate: {method: "POST"}},
+    interestList: {
+    	type: Array,
+        validate: {
+        	method: "POST",
+            json: {seq: Number, name: String}
+        }
+    }
+    gender: String
+});
+
+VO.setParams = (req, res, next) => VO.set(req, res, next);
+
+router.post("/", VO.setParams, (req, res, next) => {
+        loginVo.set(req, res, next);
+    }, function(req, res) {
+	    console.log(loginVo.get);
+    })
+
+module.exports = router;
+```
