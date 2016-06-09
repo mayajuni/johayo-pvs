@@ -74,7 +74,7 @@ class Jpvs {
                             for(let val of realParam) {
                                 for(let smalKey in param.validate.json) {
                                     if(!val[smalKey]) {
-                                        return next(new johayoError('bad_param', `${key}-${smalKey}`));
+                                        return next(new johayoError('bad_array_param', `${key}-${smalKey}`));
                                     }
                                 }
                             }
