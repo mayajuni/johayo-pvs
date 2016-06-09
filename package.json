@@ -1,6 +1,6 @@
 {
   "name": "johayo-pvs",
-  "version": "0.1",
+  "version": "0.1.0",
   "description": "parameters-validator-set",
   "main": "index.js",
   "scripts": {
